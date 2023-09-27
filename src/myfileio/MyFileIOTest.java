@@ -197,6 +197,7 @@ class MyFileIOTest {
 		System.out.print(" PASSED\n   Testing non-existent file (FILE_DOES_NOT_EXIST or FILE_OK): ");
 		fd = fio.getFileHandle("output/.testcase1");
 		assertEquals(MyFileIO.FILE_DOES_NOT_EXIST,fio.checkFileStatus(fd,true));
+		System.out.println(fio.checkFileStatus(fd,false));
 		assertEquals(MyFileIO.FILE_OK,fio.checkFileStatus(fd,false));
 		System.out.print(" PASSED\n   Testing detection of Zero Length File ");
 		fio.createEmptyFile("output/.testcase1");

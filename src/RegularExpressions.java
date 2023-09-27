@@ -16,8 +16,7 @@ public class RegularExpressions {
 	 * @return the swapped string
 	 */
 	String swapLastFirst(String in) {
-		// TODO: Implement this method - it should be no more than 2 lines
-		return null;
+		return in.replaceAll("(\\\\w{2,}), (\\\\w{2,})", "$2 $1");
 	}
 
 	/**
