@@ -16,7 +16,10 @@ public class RegularExpressions {
 	 * @return the swapped string
 	 */
 	String swapLastFirst(String in) {
-		return in.replaceAll("(\\\\w{2,}), (\\\\w{2,})", "$2 $1");
+		String pattern = "\\s*(\\w+)\\s*,\\s*(\\w+)\\s*";
+		String result = in.replaceAll("\\s+{2,}", "");
+		result = result.replaceAll(pattern, "$2 $1").replaceAll(",(\\w+)", "$1 ").replaceAll("(\\w+),", " $1");
+		return result;
 	}
 
 	/**
@@ -32,7 +35,10 @@ public class RegularExpressions {
 	 */
 	String padTokensWithSpaces(String in) {
 		//TODO: Implement this method - it should be no more than 2-3 lines
-		return null;
+		String pattern = "([\\+\\*-\\/\\(\\)])";
+		String result = in.replaceAll(pattern, " $1 ").replaceAll("^\\s*", "");
+	    result = result.replaceAll("\\.\\s+(?=[0-9a-z\\s])", ".").replaceAll("(?<=[0-9a-z\\s])\\s+\\.", ".");
+		return result;
 	}
 	
 	/**
@@ -45,8 +51,21 @@ public class RegularExpressions {
 	 * @return the string[]
 	 */
 	String[] identifyTokenType(String in) {
-		//TODO: Implement this method...
-		return null;
+	    String result = padTokensWithSpaces(in);
+	    String[] tokens = result.split("\\s+");
+	    for (int i = 0; i < tokens.length; i++) {
+	        String token = tokens[i];
+	        if (token.matches("\\d+")) {
+	            tokens[i] = "Integer: " + token;
+	        } else if (token.matches("-?\\d+(\\.\\d+)?")) {
+	            tokens[i] = "Double: " + token;
+	        } else if (token.matches("[\\+\\*-\\/\\(\\)]")){
+	            tokens[i] = "Operation: " + token;
+	        } else {
+	        	tokens[i] = "Error: " + token;
+			}
+	    }
+	    return tokens;
 	} 
 	
 	/**
@@ -56,7 +75,7 @@ public class RegularExpressions {
 	 */
 	void printTokens(String[] tokens) {
 		for (int i = 0; i < tokens.length; i++ ) {
-			System.out.println( tokens[i]);
+			System.out.println(tokens[i]);
 		}
 	}
 
@@ -74,6 +93,10 @@ public class RegularExpressions {
 		System.out.println(test+" becomes ["+regex.swapLastFirst(test)+"]");
 		test = "   Duck ,Donald";     // ==> Should become [Donald Duck]
 		System.out.println(test+" becomes ["+regex.swapLastFirst(test)+"]");
+		test = "	       ,Beyonce		";// ==> Should become [Donald Duck]
+		System.out.println(test+" becomes ["+regex.swapLastFirst(test)+"]");
+
+		
 		test = "100+59*(17/4)";       // ==> [100 + 59 *  ( 17 / 4 ) ]
 		System.out.println(test+" becomes ["+regex.padTokensWithSpaces(test)+"]");
 		test = "-57+217*(17/-4) ";    // ==> [- 57 + 217 *  ( 17 /  - 4 )  ]
