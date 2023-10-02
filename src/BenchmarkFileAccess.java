@@ -124,11 +124,16 @@ public class BenchmarkFileAccess {
 		initResults();
 		System.out.println("Executing FileWriter Benchmark");
 		for (int fileNum = 0; fileNum < NUM_FILES; fileNum++ ) {
-			File fh = fileIO.getFileHandle("data/test_"+fileNum);
+			
+			File fh = fileIO.getFileHandle("data/write_"+fileNum);
+	
+			if (fileIO.checkFileStatus(fh, true) == MyFileIO.FILE_DOES_NOT_EXIST) {
+				fileIO.createEmptyFile("data/write_"+fileNum);
+			}
+			
 			System.out.println("Benchmarking "+fh.getName()+":");
-
-			if (fileIO.checkFileStatus(fh, true) == MyFileIO.FILE_OK) {
-//				long fileLength = fh.length();
+			
+			if (fileIO.checkFileStatus(fh, false) == MyFileIO.WRITE_EXISTS) {
 				for (int iter = 0; iter < NUM_ITER; iter++) {
 					System.out.println("   Iteration: "+iter);
 					FileWriter fw = fileIO.openFileWriter(fh);
@@ -139,14 +144,16 @@ public class BenchmarkFileAccess {
 						}
 						stop = System.nanoTime();
 					} catch (IOException e) {
-						System.out.println("IO Exception occurred while reading data/text_"+fileNum);
+						System.out.println("IO Exception occurred while writing data/text_"+fileNum);
 						e.printStackTrace();
 					}
-					fileIO.closeFile(fw);
-					fileIO.deleteFile(null);
 					results[fileNum][iter] = stop - start;
+					fileIO.closeFile(fw);
 				}
+			} else {
+				System.out.println("bad file");
 			}
+			fileIO.deleteFile(fh.getPath());
 		}
 	}
 	
@@ -155,7 +162,41 @@ public class BenchmarkFileAccess {
 	 * using BufferedWriter instead of FileWriter
 	 */
 	private void benchmarkBufferedWriter() {
-		//TODO: Implement this method...
+		long start=0, stop=0;
+		initResults();
+		System.out.println("Executing BufferedWriter Benchmark");
+		for (int fileNum = 0; fileNum < NUM_FILES; fileNum++ ) {
+			
+			File fh = fileIO.getFileHandle("data/write_"+fileNum);
+	
+			if (fileIO.checkFileStatus(fh, true) == MyFileIO.FILE_DOES_NOT_EXIST) {
+				fileIO.createEmptyFile("data/write_"+fileNum);
+			}
+			
+			System.out.println("Benchmarking "+fh.getName()+":");
+			
+			if (fileIO.checkFileStatus(fh, false) == MyFileIO.WRITE_EXISTS) {
+				for (int iter = 0; iter < NUM_ITER; iter++) {
+					System.out.println("   Iteration: "+iter);
+					BufferedWriter bw = fileIO.openBufferedWriter(fh);
+					try {
+						start = System.nanoTime();
+						for (int charCnt = 0; charCnt < CHARS_PER_FILE[fileNum]; charCnt++) {
+							bw.write('x');
+						}
+						stop = System.nanoTime();
+					} catch (IOException e) {
+						System.out.println("IO Exception occurred while writing data/write_"+fileNum);
+						e.printStackTrace();
+					}
+					results[fileNum][iter] = stop - start;
+					fileIO.closeFile(bw);
+				}
+			} else {
+				System.out.println("bad file");
+			}
+			fileIO.deleteFile(fh.getPath());
+		}
 	}
 	
 	/**
@@ -206,12 +247,12 @@ public class BenchmarkFileAccess {
 		BenchmarkFileAccess bmfa = new BenchmarkFileAccess();
 //		bmfa.benchmarkFileReader();
 //		bmfa.printResults("FileReader Benchmark");
-		bmfa.benchmarkBufferedReader();
-		bmfa.printResults("BufferedReader Benchmark");
+//		bmfa.benchmarkBufferedReader();
+//		bmfa.printResults("BufferedReader Benchmark");
 //		bmfa.benchmarkFileWriter();
 //		bmfa.printResults("FileWriter Benchmark");
-//		bmfa.benchmarkBufferedWriter();
-//		bmfa.printResults("BufferedWriter Benchmark");
+		bmfa.benchmarkBufferedWriter();
+		bmfa.printResults("BufferedWriter Benchmark");
 	}
 
 }
