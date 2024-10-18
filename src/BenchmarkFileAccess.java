@@ -245,12 +245,12 @@ public class BenchmarkFileAccess {
 	 */
 	public static void main(String[] args) {
 		BenchmarkFileAccess bmfa = new BenchmarkFileAccess();
-//		bmfa.benchmarkFileReader();
-//		bmfa.printResults("FileReader Benchmark");
-//		bmfa.benchmarkBufferedReader();
-//		bmfa.printResults("BufferedReader Benchmark");
-//		bmfa.benchmarkFileWriter();
-//		bmfa.printResults("FileWriter Benchmark");
+		bmfa.benchmarkFileReader();
+		bmfa.printResults("FileReader Benchmark");
+		bmfa.benchmarkBufferedReader();
+		bmfa.printResults("BufferedReader Benchmark");
+		bmfa.benchmarkFileWriter();
+		bmfa.printResults("FileWriter Benchmark");
 		bmfa.benchmarkBufferedWriter();
 		bmfa.printResults("BufferedWriter Benchmark");
 	}

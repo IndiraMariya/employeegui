@@ -26,6 +26,7 @@ public class MyFileIO_Tester {
 		   then read it... are the contents correct... then delete the file...
 		   was it deleted?
 		   */
+	
 		System.out.print(fileIO.getFileHandle(null));
 		System.out.print(fileIO.createEmptyFile(""));
 		
